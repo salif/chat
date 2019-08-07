@@ -1,2 +1,2 @@
-# chat
-Php chat
+# PHP/MySQL chat
+
