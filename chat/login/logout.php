@@ -1,9 +1,9 @@
 <?php
 session_start();
-require "../conn.php";
-require "../counter.php";
-$conn->close();
-unset($_SESSION['vlz']);
+require_once "../conn.php";
+require_once "../counter.php";
+unset($_SESSION["vlz"]);
 session_destroy();
-header('location:index.php');
-?>
+$conn->close();
+header("location:index.php");
+exit;

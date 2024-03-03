@@ -1,8 +1,8 @@
 <?php
 session_start();
-require "conn.php";
-require "counter.php";
-if(!isset($_SESSION['vlz'])){
+require_once "conn.php";
+require_once "counter.php";
+if (!isset($_SESSION["vlz"])) {
 	$conn->close();
 	header('location:login/');
 	exit;
@@ -11,6 +11,7 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>Chat</title>
 	<meta charset="utf-8" />
@@ -19,6 +20,7 @@ $conn->close();
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="/chat/style.css" />
 </head>
+
 <body class="bg-dark text-white">
 	<div class="container" style="margin-top:30px">
 		<h2 align="center" id="chat-name"></h2>
@@ -36,6 +38,7 @@ $conn->close();
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/chat/script.js"></script>
+	<script type="text/javascript" src="./script.js"></script>
 </body>
+
 </html>

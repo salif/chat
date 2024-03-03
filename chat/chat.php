@@ -1,55 +1,42 @@
 <?php
 session_start();
-require "conn.php";
+require_once "conn.php";
+header("Content-Type: application/json; charset=utf-8");
+$retr = ["msgs" => array(), "iserr" => 0, "err" => ""];
 
-$current_user="";
-
-if(isset($_SESSION['vlz'])) {
+if (!isset($_SESSION["vlz"])) {
+	$retr["iserr"] = 1;
+	$retr["err"] = "not logged in!";
+} elseif (!isset($_POST["command"]) || !isset($_POST["data"])) {
+	$retr["iserr"] = 1;
+	$retr["err"] = "not provided command or data!";
+} else {
+	$cmd = $_POST["command"];
+	$data = $_POST["data"];
 	$current_user = $_SESSION['vlz'];
-}
 
-if(!isset($_POST["q"]) || !isset($_POST["data"])) {
-	$conn->close();
-	exit;
-}
-
-$q = $_POST["q"];
-$data = $_POST["data"];
-$retr = ["data"=>array(), "id"=>0];
-
-if($q == "load") {
-	$data = mysqli_real_escape_string($conn, $data);
-	$sql = "SELECT * FROM `chat` WHERE `id` > $data";
-	$result = $conn->query($sql);
-	if ($result->num_rows > 0) {
-		$temparray = array();
-		while($row = $result->fetch_assoc()) {
-			$row["me"] = ($row["username"] === $current_user);
-			array_push($temparray, $row);
-			$data = $row["id"];
+	if ($cmd == "load") {
+		$e_data = SQLite3::escapeString($data);
+		$result = $conn->query("SELECT * FROM chat WHERE chat.id > $e_data");
+		$msgs = array();
+		while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+			if ($row["username"] === $current_user) {
+				$row["username"] = "M";
+			}
+			array_push($msgs, $row);
 		}
-		$retr["data"] = $temparray;
-		$retr["id"] = $data;
+		$retr["msgs"] = $msgs;
+	} elseif ($cmd == "send") {
+		$e_user = SQLite3::escapeString($_SESSION["vlz"]);
+		$e_text = SQLite3::escapeString(trim($data));
+		if (!$conn->exec("INSERT INTO chat('text', 'username') VALUES ('$e_text', '$e_user')")) {
+			$retr["iserr"] = 1;
+			$retr["err"] = array($conn->lastErrorMsg());
+		}
 	} else {
-		$retr["data"] = array();
-		$retr["id"] = $data;
-	}
-} elseif ($q == "send") {
-	$chat_user = mysqli_real_escape_string($conn, $_SESSION['vlz']);
-	$chat_text = mysqli_real_escape_string($conn, trim($data));
-	$sql = "INSERT INTO `chat`(`text`, `username`) VALUES ('$chat_text', '$chat_user')";
-	if($conn->query($sql)) {
-		$retr["data"] = array('ok');
-		$retr["id"] = 0;
-	} else {
-		$retr["data"] = array($conn->error);
-		$retr["id"] = 0;
+		$retr["iserr"] = 1;
+		$retr["err"] = "invalid command!";
 	}
 }
-
-$conn->close();
-
-header("Content-Type: application/json");
 echo json_encode($retr);
-
-?>
+$conn->close();

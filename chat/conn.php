@@ -1,9 +1,5 @@
 <?php
-
-$conn = new mysqli("localhost", "root", "", "chat");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$conn = new SQLite3(__DIR__ . '/db/main.db');
+if (!$conn) {
+    die("Connection failed: " . $conn->lastErrorMsg());
 }
-
-?>

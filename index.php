@@ -1,3 +1,3 @@
 <?php
-header('location:chat/');
+header('location:/chat/');
 ?>
