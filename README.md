@@ -4,11 +4,12 @@ I created this repository a long time ago, I have very little knowledge of php.
 
 ## Screenshots
 
-*TODO*
+![screenshot](./media/chat.png)
 
 ## Links
 
 - Source code: [Github](https://github.com/salif/chat)
+- Source code: [Codeberg](https://codeberg.org/salif/chat)
 
 ## Run
 
