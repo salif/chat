@@ -45,7 +45,7 @@ if (isset($_POST["type"])) {
 			if (r_is_bad($username, 3, 32)) {
 				$error = "the length of username should be between 3 and 32!";
 			} elseif (r_is_bad($displayname, 2, 32)) {
-				$error = "the length of display name should be between 1 and 32!";
+				$error = "the length of display name should be between 2 and 32!";
 			} elseif (r_is_bad($password, 3, 256)) {
 				$error = "the length of password should be between 3 and 256!";
 			} else {
@@ -105,7 +105,7 @@ $conn->close();
 				<input type="text" name="username" class="form-control" placeholder="Username" required="required" />
 				<input type="password" id="login_password" class="form-control" placeholder="Password" />
 				<input type="password" id="login_new_password" name="newpassword" class="form-control d-none" readonly="readonly" required="required" />
-				<input type="button" id="login_continue" value="continue" onclick="javascript:set_login_password();" class="btn btn-primary" style="width:100%;" />
+				<input type="button" id="login_continue" value="Continue" onclick="javascript:set_login_password();" class="btn btn-primary" style="width:100%;" />
 				<input type="hidden" name="type" value="login" required="required" />
 				<input type="submit" id="login_submit" value="Login" class="btn btn-primary d-none" style="width:100%;" />
 				&nbsp;&nbsp;<a href="javascript:show_signup();" class="mylink">Sign up</a>
@@ -116,7 +116,7 @@ $conn->close();
 				<input type="password" id="signup_password" class="form-control" placeholder="Password" />
 				<input type="password" id="signup_c_password" class="form-control" placeholder="Repeat password" />
 				<input type="password" id="signup_new_password" name="newpassword" class="form-control d-none" readonly="readonly" required="required" />
-				<input type="button" id="signup_continue" value="continue" onclick="javascript:set_signup_password();" class="btn btn-primary" style="width:100%;" />
+				<input type="button" id="signup_continue" value="Continue" onclick="javascript:set_signup_password();" class="btn btn-primary" style="width:100%;" />
 				<input type="hidden" name="type" value="signup" required="required" />
 				<input type="submit" id="signup_submit" value="Sign up" class="btn btn-primary d-none" style="width:100%;" />
 				&nbsp;&nbsp;<a href="javascript:show_login();" class="mylink">Login</a>
@@ -167,23 +167,45 @@ $conn->close();
 		}
 
 		async function set_signup_password() {
-			document.querySelector("#signup_new_password").classList.remove("d-none");
-			var el_pass = document.querySelector("#signup_password")
-			var el_c_pass = document.querySelector("#signup_c_password")
+			if (document.getElementById("signup_password").value.length < 5) {
+				document.getElementById("errorm").textContent = "Error: the length of password should be at least 5!";
+				document.getElementById("signup_password").focus();
+				return;
+			}
+			if (document.getElementById("signup_password").value !== document.getElementById("signup_c_password").value) {
+				document.getElementById("errorm").textContent = "Error: the passwords don't match!";
+				document.getElementById("signup_c_password").focus();
+				return;
+			}
+			document.getElementById("signup_new_password").classList.remove("d-none");
+			var el_pass = document.getElementById("signup_password");
+			var el_c_pass = document.getElementById("signup_c_password");
 			el_pass.classList.add("d-none");
 			el_c_pass.classList.add("d-none");
-			document.querySelector("#signup_continue").classList.add("d-none");
-			document.querySelector("#signup_new_password").value = await hash_p(el_pass.value);
-			document.querySelector("#signup_submit").classList.remove("d-none");
+			document.getElementById("signup_continue").classList.add("d-none");
+			document.getElementById("signup_new_password").value = await hash_p(el_pass.value);
+			document.getElementById("signup_submit").classList.remove("d-none");
 		}
 		async function set_login_password() {
-			document.querySelector("#login_new_password").classList.remove("d-none");
-			var el_pass = document.querySelector("#login_password")
+			document.getElementById("login_new_password").classList.remove("d-none");
+			var el_pass = document.getElementById("login_password");
 			el_pass.classList.add("d-none");
-			document.querySelector("#login_continue").classList.add("d-none");
-			document.querySelector("#login_new_password").value = await hash_p(el_pass.value);
-			document.querySelector("#login_submit").classList.remove("d-none");
+			document.getElementById("login_continue").classList.add("d-none");
+			document.getElementById("login_new_password").value = await hash_p(el_pass.value);
+			document.getElementById("login_submit").classList.remove("d-none");
 		}
+		document.getElementById("form_login").addEventListener("submit", function(e) {
+			e.preventDefault();
+			if (document.getElementById("login_new_password").value.length > 0) {
+				this.submit();
+			}
+		})
+		document.getElementById("form_signup").addEventListener("submit", function(e) {
+			e.preventDefault();
+			if (document.getElementById("signup_new_password").value.length > 0) {
+				this.submit();
+			}
+		})
 	</script>
 </body>
 

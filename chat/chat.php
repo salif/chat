@@ -13,7 +13,7 @@ if (!isset($_SESSION["vlz"])) {
 } else {
 	$cmd = $_POST["command"];
 	$data = $_POST["data"];
-	$current_user = $_SESSION['vlz'];
+	$current_user = $_SESSION["vlz"];
 
 	if ($cmd == "load") {
 		$e_data = SQLite3::escapeString($data);

@@ -4,7 +4,7 @@ function hash_p($p) {
 	$i = 0;
 	$h = $p . "2mSU5XkpM5av3Jy9xzqAa3AuaoMo25wR";
 	while ($i < 256) {
-		$h = hash('sha256', $h . $i);
+		$h = hash("sha256", $h . $i);
 		$i += 1;
 	}
 	return $h;

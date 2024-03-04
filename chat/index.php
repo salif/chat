@@ -4,7 +4,7 @@ require_once "conn.php";
 require_once "counter.php";
 if (!isset($_SESSION["vlz"])) {
 	$conn->close();
-	header('location:login/');
+	header("location:login/");
 	exit;
 }
 $conn->close();
